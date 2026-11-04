@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Maya AI Settings"
+            android:textColor="@color/primary_cyan"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Gemini API Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Google Gemini API Key"
+            android:textColor="@color/text_white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editGeminiKey"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Enter Gemini API Key (e.g. AIzaSy...)"
+            android:textColorHint="@color/text_dim"
+            android:textColor="@color/text_white"
+            android:background="@color/surface_dark"
+            android:padding="10dp"
+            android:layout_marginTop="6dp"
+            android:textSize="13sp"
+            android:inputType="textPassword" />
+
+        <!-- ElevenLabs API Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ElevenLabs API Key (Optional for Realistic Voice)"
+            android:textColor="@color/text_white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <EditText
+            android:id="@+id/editElevenLabsKey"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Enter ElevenLabs API Key"
+            android:textColorHint="@color/text_dim"
+            android:textColor="@color/text_white"
+            android:background="@color/surface_dark"
+            android:padding="10dp"
+            android:layout_marginTop="6dp"
+            android:textSize="13sp"
+            android:inputType="textPassword" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ElevenLabs Voice ID (Optional)"
+            android:textColor="@color/text_white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/editVoiceId"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Default: 21m00Tcm4TlvDq8ikWAM (Rachel)"
+            android:textColorHint="@color/text_dim"
+            android:textColor="@color/text_white"
+            android:background="@color/surface_dark"
+            android:padding="10dp"
+            android:layout_marginTop="6dp"
+            android:textSize="13sp" />
+
+        <!-- System Prompt Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="System Personality Prompt"
+            android:textColor="@color/text_white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <EditText
+            android:id="@+id/editSystemPrompt"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:hint="You are Maya, an ultra-intelligent, helpful voice assistant..."
+            android:textColorHint="@color/text_dim"
+            android:textColor="@color/text_white"
+            android:background="@color/surface_dark"
+            android:padding="10dp"
+            android:layout_marginTop="6dp"
+            android:textSize="13sp"
+            android:gravity="top" />
+
+        <Button
+            android:id="@+id/btnSaveSettings"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Save &amp; Apply"
+            android:textColor="@color/bg_dark"
+            android:backgroundTint="@color/primary_cyan"
+            android:layout_marginTop="24dp"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</ScrollView>
