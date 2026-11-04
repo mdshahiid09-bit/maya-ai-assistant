@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Maya Assistant</string>
+    <string name="accessibility_desc">Enables Maya AI to perform voice-activated phone automation, such as navigating screens, opening apps, and performing gestures.</string>
+</resources>
