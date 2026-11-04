@@ -9,4 +9,5 @@
     <color name="bubble_user">#1E293B</color>
     <color name="bubble_ai">#0F3E50</color>
     <color name="accent_green">#00E676</color>
+    <color name="accent_orange">#FF9100</color>
 </resources>

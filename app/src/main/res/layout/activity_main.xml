@@ -24,13 +24,14 @@
             android:textSize="22sp"
             android:textStyle="bold" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btnSettings"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:src="@drawable/ic_settings"
             android:background="?selectableItemBackgroundBorderless"
             android:padding="6dp"
+            android:tint="@color/text_dim"
             app:tint="@color/text_dim" />
     </LinearLayout>
 
@@ -60,7 +61,8 @@
             android:layout_height="36dp"
             android:text="Enable"
             android:textSize="11sp"
-            android:backgroundTint="#FF9100" />
+            android:textColor="@color/bg_dark"
+            android:backgroundTint="@color/accent_orange" />
     </LinearLayout>
 
     <!-- Glowing Voice Orb / Pulse -->
@@ -121,12 +123,13 @@
             android:textSize="14sp"
             android:inputType="textCapSentences" />
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btnSend"
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:src="@drawable/ic_send"
             android:background="?selectableItemBackgroundBorderless"
+            android:tint="@color/primary_cyan"
             app:tint="@color/primary_cyan" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
