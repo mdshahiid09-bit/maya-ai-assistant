@@ -113,14 +113,14 @@ class MainActivity : AppCompatActivity() {
         adapter.notifyItemInserted(messages.size - 1)
 
         statusText.text = "Maya is thinking..."
-        voiceOrb.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300).start()
+        voiceOrb.animate().scaleX(1.3f).scaleY(1.3f).setDuration(300L).start()
 
         lifecycleScope.launch {
             val response = geminiService.processUserPrompt(input)
             messages.add(ChatMessage(response, false))
             adapter.notifyItemInserted(messages.size - 1)
 
-            voiceOrb.animate().scaleX(1.0f).scaleY(1.0f).setDuration(300).start()
+            voiceOrb.animate().scaleX(1.0f).scaleY(1.0f).setDuration(300L).start()
             statusText.text = "Maya is speaking..."
 
             elevenLabsService.speak(response)

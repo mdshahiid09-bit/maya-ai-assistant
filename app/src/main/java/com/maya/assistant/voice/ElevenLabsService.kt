@@ -21,8 +21,8 @@ class ElevenLabsService(
     private val voiceId: String
 ) {
     private val client = OkHttpClient.Builder()
-        .connectTimeout(20, TimeUnit.SECONDS)
-        .readTimeout(20, TimeUnit.SECONDS)
+        .connectTimeout(20L, TimeUnit.SECONDS)
+        .readTimeout(20L, TimeUnit.SECONDS)
         .build()
 
     private var androidTts: TextToSpeech? = null

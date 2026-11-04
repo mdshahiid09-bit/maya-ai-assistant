@@ -5,6 +5,9 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build Maya AI APK
@@ -20,13 +23,27 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Accept Android SDK Licenses
+      run: yes | sdkmanager --licenses || true
+
+    - name: Configure Android SDK Path
+      run: echo "sdk.dir=$ANDROID_HOME" > local.properties
+
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
       with:
         gradle-version: '8.6'
 
+    - name: Generate Gradle Wrapper
+      run: |
+        gradle wrapper --gradle-version 8.6
+        chmod +x gradlew
+
     - name: Build Debug APK
-      run: gradle assembleDebug --stacktrace
+      run: ./gradlew assembleDebug --stacktrace
 
     - name: Upload Debug APK Artifact
       uses: actions/upload-artifact@v4
@@ -39,8 +56,10 @@ jobs:
       uses: softprops/action-gh-release@v2
       if: github.ref == 'refs/heads/main'
       with:
-        tag_name: v1.0.0
-        name: "Maya AI Assistant v1.0.0"
+        tag_name: "v1.0.${{ github.run_number }}"
+        name: "Maya AI Assistant v1.0.${{ github.run_number }}"
+        draft: false
+        prerelease: false
         body: |
           ### Maya AI Personal Assistant (Free & Unlimited) 🚀
           - Direct Google Gemini 1.5 Integration (Unlimited with your own free API Key)

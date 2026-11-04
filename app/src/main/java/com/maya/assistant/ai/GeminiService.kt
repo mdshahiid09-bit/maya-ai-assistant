@@ -17,8 +17,8 @@ class GeminiService(
     private val phoneController: PhoneController
 ) {
     private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(30L, TimeUnit.SECONDS)
+        .readTimeout(30L, TimeUnit.SECONDS)
         .build()
 
     suspend fun processUserPrompt(userInput: String): String = withContext(Dispatchers.IO) {

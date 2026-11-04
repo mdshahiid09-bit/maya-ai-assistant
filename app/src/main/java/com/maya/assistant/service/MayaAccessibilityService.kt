@@ -50,7 +50,7 @@ class MayaAccessibilityService : AccessibilityService() {
     fun performClick(x: Float, y: Float) {
         val path = Path().apply { moveTo(x, y) }
         val gesture = GestureDescription.Builder()
-            .addStroke(GestureDescription.StrokeDescription(path, 0, 100))
+            .addStroke(GestureDescription.StrokeDescription(path, 0L, 100L))
             .build()
         dispatchGesture(gesture, null, null)
     }
