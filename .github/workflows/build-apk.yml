@@ -19,13 +19,14 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.6'
 
     - name: Build Debug APK
-      run: ./gradlew assembleDebug --stacktrace
+      run: gradle assembleDebug --stacktrace
 
     - name: Upload Debug APK Artifact
       uses: actions/upload-artifact@v4
@@ -36,17 +37,18 @@ jobs:
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
-      if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main'
       with:
         tag_name: v1.0.0
         name: "Maya AI Assistant v1.0.0"
         body: |
-          ### Maya AI Personal Assistant (Free & Unlimited)
-          - Built automatically via GitHub Actions
-          - Integrated with Google Gemini 1.5 Flash
-          - ElevenLabs Realistic Voices + Android TTS fallback
-          - Full phone automation via Android Accessibility & Intents
-          - Download `app-debug.apk` below and install on your Android phone!
+          ### Maya AI Personal Assistant (Free & Unlimited) 🚀
+          - Direct Google Gemini 1.5 Integration (Unlimited with your own free API Key)
+          - Realistic ElevenLabs Voices + Offline Android TTS Fallback
+          - Full Hands-Free Phone Control (Android Accessibility & Intents)
+          - No 10-minute timer paywall!
+          
+          **Download `app-debug.apk` below and install it directly on your Android device!**
         files: app/build/outputs/apk/debug/app-debug.apk
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
