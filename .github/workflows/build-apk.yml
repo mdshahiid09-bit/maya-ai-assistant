@@ -24,18 +24,19 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-
-    - name: Accept Android SDK Licenses & Install Platform 34
+    - name: Diagnostics & SDK Verification
       run: |
-        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0" || true
+        echo "=== Runner Environment ==="
+        echo "ANDROID_HOME=$ANDROID_HOME"
+        echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+        echo "JAVA_HOME=$JAVA_HOME"
+        ls -d $ANDROID_HOME/platforms/* 2>/dev/null || true
+        ls -d $ANDROID_HOME/build-tools/* 2>/dev/null || true
 
     - name: Build Debug APK with Standalone Gradle 8.6
       id: build_apk
       run: |
-        echo "sdk.dir=$ANDROID_HOME" > local.properties
+        touch full_build.log
         wget -q https://services.gradle.org/distributions/gradle-8.6-bin.zip
         unzip -q gradle-8.6-bin.zip
         ./gradle-8.6/bin/gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee full_build.log
