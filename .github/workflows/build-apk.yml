@@ -23,7 +23,6 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
@@ -34,11 +33,13 @@ jobs:
     - name: Configure Android SDK Path
       run: echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-    - name: Download Gradle Wrapper JAR
+    - name: Setup Gradle and Wrapper
       run: |
-        mkdir -p gradle/wrapper
-        curl -fsSL -o gradle/wrapper/gradle-wrapper.jar https://raw.githubusercontent.com/gradle/gradle/v8.6.0/gradle/wrapper/gradle-wrapper.jar
+        wget -q https://services.gradle.org/distributions/gradle-8.6-bin.zip
+        unzip -q gradle-8.6-bin.zip
+        ./gradle-8.6/bin/gradle wrapper --gradle-version 8.6
         chmod +x gradlew
+        rm -rf gradle-8.6 gradle-8.6-bin.zip
 
     - name: Build Debug APK
       id: build_apk
@@ -46,12 +47,12 @@ jobs:
         set -o pipefail
         ./gradlew assembleDebug --stacktrace 2>&1 | tee build.log
 
-    - name: Post Failure Log as Issue
+    - name: Report Build Log on Failure
       if: failure()
       run: |
         gh issue create \
           --title "Build Failure Log - Run #${{ github.run_number }}" \
-          --body "$(cat build.log 2>/dev/null | tail -c 60000 || echo 'No build.log generated')" || true
+          --body-file build.log || true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
