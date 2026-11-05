@@ -30,30 +30,28 @@ jobs:
     - name: Accept Android SDK Licenses
       run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
-    - name: Configure Android SDK Path
-      run: echo "sdk.dir=$ANDROID_HOME" > local.properties
-
-    - name: Setup Gradle and Wrapper
-      run: |
-        wget -q https://services.gradle.org/distributions/gradle-8.6-bin.zip
-        unzip -q gradle-8.6-bin.zip
-        ./gradle-8.6/bin/gradle wrapper --gradle-version 8.6
-        chmod +x gradlew
-        rm -rf gradle-8.6 gradle-8.6-bin.zip
-
-    - name: Build Debug APK
+    - name: Build Debug APK with Standalone Gradle 8.6
       id: build_apk
       run: |
-        set -o pipefail
-        ./gradlew assembleDebug --stacktrace 2>&1 | tee build.log
+        {
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          cat local.properties
+          echo "=== Downloading Gradle 8.6 ==="
+          wget -q https://services.gradle.org/distributions/gradle-8.6-bin.zip
+          unzip -q gradle-8.6-bin.zip
+          ./gradle-8.6/bin/gradle --version
+          echo "=== Running assembleDebug ==="
+          ./gradle-8.6/bin/gradle assembleDebug --stacktrace
+        } 2>&1 | tee full_build.log
 
     - name: Report Build Log on Failure
       if: failure()
       run: |
         gh issue create \
           --title "Build Failure Log - Run #${{ github.run_number }}" \
-          --body-file build.log || true
+          --body-file full_build.log
       env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload Debug APK Artifact
