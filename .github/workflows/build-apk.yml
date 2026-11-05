@@ -27,29 +27,42 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    - name: Accept Android SDK Licenses
-      run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+    - name: Accept Android SDK Licenses & Install Platform 34
+      run: |
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0" || true
 
     - name: Build Debug APK with Standalone Gradle 8.6
       id: build_apk
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
-        cat local.properties
         wget -q https://services.gradle.org/distributions/gradle-8.6-bin.zip
         unzip -q gradle-8.6-bin.zip
-        ./gradle-8.6/bin/gradle assembleDebug --stacktrace 2>&1 | tee full_build.log
+        ./gradle-8.6/bin/gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee full_build.log
         BUILD_STATUS=${PIPESTATUS[0]}
         echo "GRADLE_EXIT_CODE=$BUILD_STATUS"
         if [ $BUILD_STATUS -ne 0 ]; then
           exit $BUILD_STATUS
         fi
 
+    - name: Upload Full Build Log
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-log-run-${{ github.run_number }}
+        path: full_build.log
+        if-no-files-found: ignore
+
     - name: Report Build Log on Failure
       if: failure()
       run: |
+        echo "### Build Failure Log (Run #${{ github.run_number }})" > issue_body.md
+        echo '```' >> issue_body.md
+        tail -n 150 full_build.log >> issue_body.md 2>/dev/null || echo "No log generated" >> issue_body.md
+        echo '```' >> issue_body.md
         gh issue create \
           --title "Build Failure Log - Run #${{ github.run_number }}" \
-          --body-file full_build.log
+          --body-file issue_body.md
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
