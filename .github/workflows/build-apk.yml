@@ -33,16 +33,16 @@ jobs:
     - name: Build Debug APK with Standalone Gradle 8.6
       id: build_apk
       run: |
-        {
-          echo "sdk.dir=$ANDROID_HOME" > local.properties
-          cat local.properties
-          echo "=== Downloading Gradle 8.6 ==="
-          wget -q https://services.gradle.org/distributions/gradle-8.6-bin.zip
-          unzip -q gradle-8.6-bin.zip
-          ./gradle-8.6/bin/gradle --version
-          echo "=== Running assembleDebug ==="
-          ./gradle-8.6/bin/gradle assembleDebug --stacktrace
-        } 2>&1 | tee full_build.log
+        echo "sdk.dir=$ANDROID_HOME" > local.properties
+        cat local.properties
+        wget -q https://services.gradle.org/distributions/gradle-8.6-bin.zip
+        unzip -q gradle-8.6-bin.zip
+        ./gradle-8.6/bin/gradle assembleDebug --stacktrace 2>&1 | tee full_build.log
+        BUILD_STATUS=${PIPESTATUS[0]}
+        echo "GRADLE_EXIT_CODE=$BUILD_STATUS"
+        if [ $BUILD_STATUS -ne 0 ]; then
+          exit $BUILD_STATUS
+        fi
 
     - name: Report Build Log on Failure
       if: failure()
