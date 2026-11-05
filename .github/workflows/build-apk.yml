@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   build:
@@ -27,20 +28,37 @@ jobs:
       uses: android-actions/setup-android@v3
 
     - name: Accept Android SDK Licenses
-      run: yes | sdkmanager --licenses || true
+      run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
     - name: Configure Android SDK Path
       run: echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
-      with:
-        gradle-version: '8.6'
+    - name: Install and Setup Gradle
+      run: |
+        wget -q https://services.gradle.org/distributions/gradle-8.6-bin.zip
+        unzip -q gradle-8.6-bin.zip
+        sudo mv gradle-8.6 /opt/gradle
+        echo "/opt/gradle/bin" >> $GITHUB_PATH
+        /opt/gradle/bin/gradle wrapper --gradle-version 8.6
+        chmod +x gradlew
 
     - name: Build Debug APK
-      run: gradle assembleDebug --stacktrace
+      id: build_apk
+      run: |
+        set -o pipefail
+        ./gradlew assembleDebug --stacktrace 2>&1 | tee build.log
+
+    - name: Post Failure Log as Issue
+      if: failure()
+      run: |
+        gh issue create \
+          --title "Build Failure Log - Run #${{ github.run_number }}" \
+          --body "$(tail -c 60000 build.log)" || true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload Debug APK Artifact
+      if: success()
       uses: actions/upload-artifact@v4
       with:
         name: Maya-AI-Assistant-Debug
@@ -48,8 +66,8 @@ jobs:
         retention-days: 30
 
     - name: Create GitHub Release
+      if: success() && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v2
-      if: github.ref == 'refs/heads/main'
       with:
         tag_name: "v1.0.${{ github.run_number }}"
         name: "Maya AI Assistant v1.0.${{ github.run_number }}"
